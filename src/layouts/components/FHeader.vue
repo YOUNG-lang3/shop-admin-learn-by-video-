@@ -54,8 +54,18 @@
     </el-form>
   </el-drawer> -->
 
-  <FormDrawer ref="formDrawerRef" style="width: 100%; height: 100%;" class="bg-red-800" @click="open">
-
+  <FormDrawer v-model="showDrawer" title="修改密码" :show-footer="true" @confirm="onSubmit">
+    <el-form ref="formRef" :model="form" :rules="rules" label-position="left" label-width="110px" style="width: 90%;" class="flex flex-col gap-4">
+      <el-form-item prop="oldpassword" label="原密码">
+        <el-input v-model="form.oldpassword" style="width: 70%" class="responsive-input flex-1"/>
+      </el-form-item>
+      <el-form-item prop="password" label="新密码">
+        <el-input v-model="form.password" type="password" style="width: 70%" class="responsive-input flex-1" show-password/>
+      </el-form-item>
+      <el-form-item prop="repassword" label="确认新密码">
+        <el-input v-model="form.repassword" type="password" style="width: 70%" class="responsive-input flex-1" show-password/>
+      </el-form-item>
+    </el-form>
   </FormDrawer>
 
 </template>
@@ -74,7 +84,8 @@ import FormDrawer from '../../components/FormDrawer.vue';
 const router = useRouter();
 const { isFullscreen, toggle } = useFullscreen();
 const showDrawer = ref(false);
-const formDrawerRef = ref(null)
+const formRef = ref(null)
+const loading = ref(false)
 
 const handleCommand = (c) => {
   switch (c) {
@@ -104,7 +115,7 @@ const handleRefresh = () => { location.reload(); }
 const handleFullscreen = () => toggle();
 
 function rePassword() {
-  formDrawerRef.value.open();
+  showDrawer.value = true;
 }
 
 const form = reactive({
@@ -125,9 +136,6 @@ const rules = reactive({
     ]
 })
 
-const formRef = ref(null);
-
-const loading = ref(false);
 
 const onSubmit = () => {
     formRef.value.validate((valid) => {
@@ -152,6 +160,8 @@ const onSubmit = () => {
             }).catch((error)=>{
               toast('修改密码失败','error');
               console.log("修改密码失败:", error);
+            }).finally(()=>{
+              loading.value = false;
             })
         }
     })

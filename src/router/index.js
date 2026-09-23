@@ -2,6 +2,7 @@ import Login from "../pages/login.vue"
 import About from "../pages/about.vue"
 import NotFound from "../pages/404.vue"
 import Admin from "../layouts/admin.vue"
+import GoodList from "../pages/goods/list.vue"
 
 import {
     createRouter,
@@ -32,6 +33,14 @@ const routes = [
                 component: About,
                 meta: {
                     title: "后台首页"
+                }
+            },
+            {
+                path: "/goods/list",
+                name: "Goodlist",
+                component: GoodList,
+                meta: {
+                    title: "商品管理"
                 }
             }
         ]

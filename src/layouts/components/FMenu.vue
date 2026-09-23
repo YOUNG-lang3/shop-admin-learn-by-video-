@@ -1,6 +1,6 @@
 <template>
-    <div class="menu-box" style="width: 250px; height: calc(100vh - 60px);">
-        <el-menu default-active="2" class="custom-menu" style="height: 100%;">
+    <div class="menu-box" :style="{width: store.state.asideWidth, height: 'calc(100vh - 60px)'}">
+        <el-menu :collapse-transition="false" :collapse="store.state.isCollapse" :unique-opened="true" default-active="2" class="custom-menu" style="height: 100%;">
             <template v-for="(item, index) in asideMenus" :key="index">
                 <!--目录-->
                 <el-sub-menu v-if="item.child && item.child.length > 0" :index="item.name">
@@ -31,6 +31,8 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import store from '../../store';
+
 const router = useRouter()
 
 const asideMenus = [
@@ -63,3 +65,11 @@ const handleSelect = (e) => {
 }
 
 </script>
+
+<style>
+.menu-box {
+    transition: all 0.3s ;
+    overflow-y: auto;
+    overflow: hidden;
+}
+</style>

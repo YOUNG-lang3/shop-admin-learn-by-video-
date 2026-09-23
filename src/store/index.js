@@ -1,23 +1,29 @@
 import { createStore } from "vuex";
 import { login, getinfo } from "../api/manager";
 import { toast } from "../composables/utils";
-import { setToken,removeToken } from "../composables/auth";
+import { setToken, removeToken } from "../composables/auth";
 
 // 创建一个新的 store 实例
 const store = createStore({
   state() {
     return {
-      user: {}
+      user: {},
+      asideWidth: '250px',
+      isCollapse: false
     }
   },
   mutations: {
     SET_USERINFO(state, user) {
       state.user = user;
+    },
+    TOGGLE_ASIDE_WIDTH(state) {
+      state.isCollapse = !state.isCollapse
+      state.asideWidth = state.isCollapse ? '64px' : '250px'
     }
   },
   actions: {
     //登录
-    login({ commit }, { username, password}) {
+    login({ commit }, { username, password }) {
       return new Promise((resolve, reject) => {
         login(username, password).then(res => {
           console.log(res);
@@ -26,7 +32,7 @@ const store = createStore({
           //存储token和用户相关信息
           setToken(res.token);
           resolve(res);
-        }).catch(error=>{
+        }).catch(error => {
           reject(error);
         })
       })

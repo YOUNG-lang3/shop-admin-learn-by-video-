@@ -2,9 +2,12 @@
   <div class="Header w-full flex items-center justify-between h-full px-4 bg-purple-500 text-light-50">
     <div class="flex items-center gap-3 ">
       <span class="font-bold">@Yy</span>
-      <el-icon>
-        <Menu />
-      </el-icon>
+      <el-tooltip effect="dark" content="折叠菜单" placement="bottom">
+        <el-icon @click="handleFold" class="cursor-pointer">
+          <Fold v-if="!store.state.isCollapse"/>
+          <Expand v-else/>
+        </el-icon>
+      </el-tooltip>
       <el-tooltip effect="dark" content="刷新" placement="bottom">
         <el-icon @click="handleRefresh" class="cursor-pointer">
           <Refresh />
@@ -55,15 +58,18 @@
   </el-drawer> -->
 
   <FormDrawer v-model="showDrawer" title="修改密码" :show-footer="true" @confirm="onSubmit">
-    <el-form ref="formRef" :model="form" :rules="rules" label-position="left" label-width="110px" style="width: 90%;" class="flex flex-col gap-4">
+    <el-form ref="formRef" :model="form" :rules="rules" label-position="left" label-width="110px" style="width: 90%;"
+      class="flex flex-col gap-4">
       <el-form-item prop="oldpassword" label="原密码">
-        <el-input v-model="form.oldpassword" style="width: 70%" class="responsive-input flex-1"/>
+        <el-input v-model="form.oldpassword" style="width: 70%" class="responsive-input flex-1" />
       </el-form-item>
       <el-form-item prop="password" label="新密码">
-        <el-input v-model="form.password" type="password" style="width: 70%" class="responsive-input flex-1" show-password/>
+        <el-input v-model="form.password" type="password" style="width: 70%" class="responsive-input flex-1"
+          show-password />
       </el-form-item>
       <el-form-item prop="repassword" label="确认新密码">
-        <el-input v-model="form.repassword" type="password" style="width: 70%" class="responsive-input flex-1" show-password/>
+        <el-input v-model="form.repassword" type="password" style="width: 70%" class="responsive-input flex-1"
+          show-password />
       </el-form-item>
     </el-form>
   </FormDrawer>
@@ -80,6 +86,7 @@ import { useFullscreen } from '@vueuse/core'
 import { ref, reactive } from 'vue';
 import { updatepassword } from '../../api/manager';
 import FormDrawer from '../../components/FormDrawer.vue';
+
 
 const router = useRouter();
 const { isFullscreen, toggle } = useFullscreen();
@@ -110,6 +117,10 @@ function logoutTo() {
   })
 }
 
+const handleFold = () => {
+  store.commit('TOGGLE_ASIDE_WIDTH')
+}
+
 const handleRefresh = () => { location.reload(); }
 
 const handleFullscreen = () => toggle();
@@ -119,52 +130,52 @@ function rePassword() {
 }
 
 const form = reactive({
-    oldpassword: '',
-    password: '',
-    repassword: ''
+  oldpassword: '',
+  password: '',
+  repassword: ''
 });
 
 const rules = reactive({
-    oldpassword: [
-      { required: true, message: '原密码不能为空', trigger: 'blur' },
-    ],
-    password: [
-      { required: true, message: '新密码不能为空', trigger: 'blur' },
-    ],
-    repassword: [
-      { required: true, message: '请再次输入新密码', trigger: 'blur' }
-    ]
+  oldpassword: [
+    { required: true, message: '原密码不能为空', trigger: 'blur' },
+  ],
+  password: [
+    { required: true, message: '新密码不能为空', trigger: 'blur' },
+  ],
+  repassword: [
+    { required: true, message: '请再次输入新密码', trigger: 'blur' }
+  ]
 })
 
 
 const onSubmit = () => {
-    formRef.value.validate((valid) => {
-        if (!valid) {
-            console.log("修改失败!");
-            return;
-        }
-        else {
-            if (form.password !== form.repassword) {
-              toast('两次密码不一致','error');
-              return;
-            }
-            loading.value == true;
-            updatepassword({
-              oldpassword: form.oldpassword,
-              password: form.password,
-              repassword: form.repassword
-            }).then(()=>{
-              toast('修改密码成功');
-              store.dispatch("logout");
-              router.push("/login");
-            }).catch((error)=>{
-              toast('修改密码失败','error');
-              console.log("修改密码失败:", error);
-            }).finally(()=>{
-              loading.value = false;
-            })
-        }
-    })
+  formRef.value.validate((valid) => {
+    if (!valid) {
+      console.log("修改失败!");
+      return;
+    }
+    else {
+      if (form.password !== form.repassword) {
+        toast('两次密码不一致', 'error');
+        return;
+      }
+      loading.value == true;
+      updatepassword({
+        oldpassword: form.oldpassword,
+        password: form.password,
+        repassword: form.repassword
+      }).then(() => {
+        toast('修改密码成功');
+        store.dispatch("logout");
+        router.push("/login");
+      }).catch((error) => {
+        toast('修改密码失败', 'error');
+        console.log("修改密码失败:", error);
+      }).finally(() => {
+        loading.value = false;
+      })
+    }
+  })
 }
 
 const onCancel = () => {

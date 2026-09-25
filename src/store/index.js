@@ -9,7 +9,9 @@ const store = createStore({
     return {
       user: {},
       asideWidth: '250px',
-      isCollapse: false
+      isCollapse: false,
+      menus: [],
+      ruleNames: []
     }
   },
   mutations: {
@@ -19,6 +21,10 @@ const store = createStore({
     TOGGLE_ASIDE_WIDTH(state) {
       state.isCollapse = !state.isCollapse
       state.asideWidth = state.isCollapse ? '64px' : '250px'
+    },
+    SET_MENUS_RULENAMES(state, {menus, ruleNames}) {
+      state.menus = menus
+      state.ruleNames = ruleNames
     }
   },
   actions: {
@@ -42,6 +48,7 @@ const store = createStore({
       return new Promise((resolve, reject) => {
         getinfo().then(res => {
           commit("SET_USERINFO", res);
+          commit("SET_MENUS_RULENAMES", {menus: res.menus, ruleNames: res.ruleNames})
           resolve(res);
         }).catch(err => reject(err))
       })

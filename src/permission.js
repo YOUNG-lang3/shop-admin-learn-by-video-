@@ -1,8 +1,7 @@
-import router from "./router";
+import {router, addRoutes} from "./router";
 import { getToken } from "./composables/auth";
 import { toast, showFullLoading, hideFullLoading } from "./composables/utils";
 import store from "./store";
-import About from "./pages/about.vue";
 
 //全局前置守卫
 router.beforeEach(async (to, from, next) => {
@@ -20,15 +19,17 @@ router.beforeEach(async (to, from, next) => {
         return next({path: "/admin/about"});
     }
     //自动存储用户信息
-    if (token) {
-        await store.dispatch("getinfo");
+    if (token && !store.state.menus.length) {
+        let { menus } = await store.dispatch("getinfo");
+        const hasNewRoute = addRoutes(menus);
+        if (hasNewRoute) return next({ ...to, replace: true });
     }
 
     //显示页面名称
     let title = to.meta.title ? (to.meta.title + "-hyy实践网") : "";
     document.title = title;
 
-    next();
+    next()
 })
 
 //全局后置守卫

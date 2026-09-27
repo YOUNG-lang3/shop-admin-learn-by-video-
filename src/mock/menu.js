@@ -27,24 +27,22 @@ const mockMenus = [
   }
 ]
 
-// 模拟 getinfo 接口：延迟 300ms 返回菜单
-export function mockGetInfo() {
-  return new Promise((resolve) => {
+export function mockLogin(username, password) {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve({ menus: mockMenus })
+      if(username && password) {
+        resolve({token: 'mock' + Date.now()})
+      }else {
+        reject(new Error('账号密码不能为空'))
+      }
     }, 300)
   })
 }
 
-// 模拟登录接口
-export function mockLogin(username, password) {
-  return new Promise((resolve, reject) => {
+export function mockGetInfo() {
+  return new Promise((resolve) => {
     setTimeout(() => {
-      if (username && password) {
-        resolve({ token: 'mock-token-' + Date.now() })
-      } else {
-        reject(new Error('账号密码不能为空'))
-      }
+      resolve({menus: mockMenus})
     }, 300)
   })
 }

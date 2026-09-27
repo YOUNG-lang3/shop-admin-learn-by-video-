@@ -11,28 +11,31 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { setToken } from '../store'
-import { mockLogin } from '../mock/menu'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { setToken } from '../store';
+import { mockLogin } from '../mock/menu';
 
 const router = useRouter()
-const username = ref('admin')
-const password = ref('123456')
-const loading = ref(false)
+let username = ref('')
+let password = ref('')
+let loading = ref(false)
 
 async function onLogin() {
   loading.value = true
   try {
     const res = await mockLogin(username.value, password.value)
-    setToken(res.token)       // 存 token
-    router.push('/admin/home') // 跳后台首页，守卫会自动拉菜单+加路由
-  } catch (e) {
+    setToken(res.token)
+    router.push('/admin/home')
+  }
+  catch(e) {
     alert(e.message)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
+
 </script>
 
 <style scoped>
